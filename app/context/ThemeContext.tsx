@@ -1,8 +1,8 @@
 // context/ThemeContext.tsx
 "use client";
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
-import { createTheme, ThemeProvider as MuiThemeProvider } from "@mui/material/styles";
+import React, { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createTheme, ThemeProvider as MuiThemeProvider, responsiveFontSizes } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
 type ThemeMode = "light" | "dark";
@@ -23,17 +23,37 @@ export const useThemeContext = () => {
 };
 
 export const ThemeProviderContext = ({ children }: { children: ReactNode }) => {
-  const [mode, setMode] = useState<ThemeMode>("light");
-
-  const toggleTheme = () => {
-    setMode((prevMode) => (prevMode === "light" ? "dark" : "light"));
+  // Leer el tema inicial desde localStorage
+  const getInitialTheme = (): ThemeMode => {
+    if (typeof window !== "undefined" && window.localStorage) {
+      const storedMode = localStorage.getItem("themeMode") as ThemeMode;
+      return storedMode || "light"; // Predeterminado a "light" si no hay nada en localStorage
+    }
+    return "light"; // Predeterminado para el SSR
   };
 
-  const theme = createTheme({
+  const [mode, setMode] = useState<ThemeMode>(getInitialTheme);
+
+  const toggleTheme = () => {
+    setMode((prevMode) => {
+      const newMode = prevMode === "light" ? "dark" : "light";
+      localStorage.setItem("themeMode", newMode);
+      return newMode;
+    });
+  };
+
+  useEffect(() => {
+    localStorage.setItem("themeMode", mode);
+  }, [mode]);
+
+  // Crear el tema y aplicar responsiveFontSizes
+  let theme = createTheme({
     palette: {
       mode,
     },
   });
+
+  theme = responsiveFontSizes(theme);
 
   return (
     <ThemeContext.Provider value={{ toggleTheme, mode }}>

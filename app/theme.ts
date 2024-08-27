@@ -1,6 +1,6 @@
 'use client';
 import { Roboto } from 'next/font/google';
-import { createTheme, responsiveFontSizes} from '@mui/material/styles';
+import { createTheme} from '@mui/material/styles';
 
 
 
@@ -25,4 +25,4 @@ const theme =
 
 
 
-export default responsiveFontSizes(theme);
+export default theme;
