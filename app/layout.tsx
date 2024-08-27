@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from "./theme";
+import { CustomThemeProvider } from "./theme-context";
+import Navbar from "./components/NavBar";
+
+
 
 
 
@@ -22,10 +24,16 @@ export default function RootLayout({
       <body>
 
         <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
+          <CustomThemeProvider>
+
+        <Navbar/>
             {children}
 
-          </ThemeProvider>
+          
+
+
+          </CustomThemeProvider>
+          
 
         </AppRouterCacheProvider>
 
